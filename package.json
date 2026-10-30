@@ -1,0 +1,16 @@
+{
+  "name": "aziz-mart",
+  "private": true,
+  "packageManager": "pnpm@12.14.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "dev:api": "pnpm --filter @aziz-mart/api dev",
+    "dev:web": "pnpm --filter @aziz-mart/web dev",
+    "dev:admin": "pnpm --filter @aziz-mart/admin dev"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  }
+}

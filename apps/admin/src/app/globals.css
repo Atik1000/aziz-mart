@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  /* Aziz Mart brand tokens (shared with the storefront) */
+  --color-green-700: #1d5a3c;
+  --color-green-900: #123d29;
+  --color-green-50: #e6efe7;
+  --color-green-25: #f3f8f4;
+  --color-ink: #17241d;
+  --color-ink-2: #3d4a42;
+  --color-muted: #5b665f;
+  --color-muted-2: #8a938c;
+  --color-cream: #f8f6f0;
+  --color-surface-2: #f3f1ea;
+  --color-line: #e6e2d8;
+  --color-line-2: #efece4;
+  --color-input: #d9d5c9;
+  --color-saffron: #e9b04a;
+  --color-sale: #a33b26;
+  --color-sale-tint: #fbeee0;
+  --color-amber-tint: #fbf1dc;
+  --color-amber-ink: #7a5413;
+  --color-footer-text: #dfe9e1;
+  --color-footer-legal: #a9bcae;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, sans-serif;
+  --font-body: var(--font-hanken), ui-sans-serif, sans-serif;
+
+  --animate-pulse-soft: pulse-soft 1.6s ease-in-out infinite;
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-green-700);
+  outline-offset: 2px;
+}

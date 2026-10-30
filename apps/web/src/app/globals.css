@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  /* Aziz Mart design tokens (see handoff README) */
+  --color-green-700: #1d5a3c;
+  --color-green-900: #123d29;
+  --color-green-50: #e6efe7;
+  --color-green-25: #f3f8f4;
+  --color-ink: #17241d;
+  --color-ink-2: #3d4a42;
+  --color-muted: #5b665f;
+  --color-muted-2: #8a938c;
+  --color-disabled: #a5aaa4;
+  --color-cream: #f8f6f0;
+  --color-surface-2: #f3f1ea;
+  --color-line: #e6e2d8;
+  --color-line-2: #efece4;
+  --color-input: #d9d5c9;
+  --color-saffron: #e9b04a;
+  --color-sale: #a33b26;
+  --color-sale-tint: #fbeee0;
+  --color-amber-tint: #fbf1dc;
+  --color-amber-ink: #7a5413;
+  --color-footer-text: #dfe9e1;
+  --color-footer-legal: #a9bcae;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, sans-serif;
+  --font-body: var(--font-hanken), ui-sans-serif, sans-serif;
+
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-sheen: sheen 9s ease-in-out infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes sheen {
+    0%, 100% { transform: translate(-12%, -10%) scale(1); opacity: .55; }
+    50% { transform: translate(10%, 8%) scale(1.15); opacity: .85; }
+  }
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-green-700);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-green-700);
+  color: #fff;
+}
+
+/* Subtle texture used behind product imagery while it loads */
+.tone-hatch {
+  background-image: repeating-linear-gradient(135deg, rgba(23, 36, 29, 0.05) 0 1px, transparent 1px 14px);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

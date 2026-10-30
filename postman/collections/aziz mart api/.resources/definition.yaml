@@ -1,0 +1,8 @@
+$kind: collection
+name: Aziz Mart API
+description: Contract tests for the Aziz Mart REST API (apps/api/openapi.yaml). Run against a local API with postman/environments/local.yaml.
+variables:
+  - key: token
+    value: ''
+  - key: order_no
+    value: ''
