@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { randomBytes } from 'crypto';
+import { createHmac, timingSafeEqual } from 'crypto';
 
 export type AdminRole = 'owner' | 'manager' | 'support';
 
@@ -15,8 +15,8 @@ interface SeedUser extends AdminUser {
 
 /**
  * Demo credentials for the in-memory build — see the root README ("Admin access").
- * Production replaces this with hashed passwords in the database and real session
- * management; the token contract (Bearer) stays the same.
+ * Production replaces this with hashed passwords in the database; the token
+ * contract (Bearer) stays the same.
  */
 const SEED_USERS: SeedUser[] = [
   { email: 'owner@azizmart.test', name: 'Aziz Rahman', role: 'owner', password: 'azizmart-owner' },
@@ -25,34 +25,46 @@ const SEED_USERS: SeedUser[] = [
 ];
 
 const TOKEN_TTL_MS = 12 * 3600_000;
+/** Demo default — set AUTH_SECRET in any shared deployment. */
+const SECRET = process.env.AUTH_SECRET ?? 'azizmart-demo-secret';
 
+const b64url = (s: string) => Buffer.from(s, 'utf8').toString('base64url');
+const sign = (payload: string) => createHmac('sha256', SECRET).update(payload).digest('base64url');
+
+/**
+ * Stateless HMAC-signed tokens (payload.signature) so sign-ins survive restarts
+ * and serverless instances — no session store needed for the demo.
+ */
 @Injectable()
 export class AuthService {
-  private sessions = new Map<string, { user: AdminUser; expires: number }>();
-
   login(email: string, password: string): { token: string; user: AdminUser } {
     const u = SEED_USERS.find((x) => x.email === (email ?? '').trim().toLowerCase());
     if (!u || u.password !== password) {
       throw new UnauthorizedException('Wrong email or password.');
     }
-    const token = randomBytes(24).toString('hex');
     const user: AdminUser = { email: u.email, name: u.name, role: u.role };
-    this.sessions.set(token, { user, expires: Date.now() + TOKEN_TTL_MS });
-    return { token, user };
+    const payload = b64url(JSON.stringify({ ...user, exp: Date.now() + TOKEN_TTL_MS }));
+    return { token: `${payload}.${sign(payload)}`, user };
   }
 
-  logout(token: string): void {
-    this.sessions.delete(token);
+  logout(_token: string): void {
+    // Stateless tokens: the client discards it; nothing to revoke server-side.
   }
 
   resolve(token: string | undefined): AdminUser | null {
     if (!token) return null;
-    const s = this.sessions.get(token);
-    if (!s) return null;
-    if (s.expires < Date.now()) {
-      this.sessions.delete(token);
+    const dot = token.lastIndexOf('.');
+    if (dot < 1) return null;
+    const payload = token.slice(0, dot);
+    const given = Buffer.from(token.slice(dot + 1));
+    const expected = Buffer.from(sign(payload));
+    if (given.length !== expected.length || !timingSafeEqual(given, expected)) return null;
+    try {
+      const j = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+      if (typeof j.exp !== 'number' || j.exp < Date.now()) return null;
+      return { email: j.email, name: j.name, role: j.role };
+    } catch {
       return null;
     }
-    return s.user;
   }
 }

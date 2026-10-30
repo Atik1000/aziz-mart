@@ -67,7 +67,7 @@ export default function Sidebar() {
 
       <div className="space-y-3 px-5 pb-6">
         <a
-          href="http://localhost:3000"
+          href={process.env.NEXT_PUBLIC_STORE_URL ?? 'http://localhost:3000'}
           target="_blank"
           rel="noreferrer"
           className="flex items-center justify-between rounded-xl border border-white/15 px-4 py-3 text-[13px] font-semibold text-footer-text transition-colors hover:bg-white/10 hover:text-white"
